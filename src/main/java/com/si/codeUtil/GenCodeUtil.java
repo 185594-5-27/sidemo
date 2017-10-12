@@ -265,6 +265,11 @@ public class GenCodeUtil {
 		fos = new FileOutputStream(fService);
 		fos.write(genService(author, basePackage+".service", beanName, queryModelName,extendsBasePackage).getBytes());
 		fos.close();
+		// 生成html文件
+		String htmlPath = createFloder("/src/main/resources/templates/sys/beanName");
+		fos = new FileOutputStream(htmlPath+"/"+toFirstCharLowerCase(beanName)+".html");
+		fos.write(HtmlUtil.genHtml(author,table,beanName).getBytes());
+		fos.close();
 	}
 	/**
 	 * 创建文件夹，防止文件路径不存在
