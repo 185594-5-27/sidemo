@@ -51,7 +51,7 @@ public class QueryBase {
     }
 
     public int getOffset() {
-        return (this.page-1)*offset;
+        return (this.page-1)*limit;
     }
 
     public void setOffset(int offset) {

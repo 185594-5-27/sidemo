@@ -150,6 +150,37 @@ public class GenCodeUtil {
 		sb.append("}");
 		return sb.toString();
 	}
+
+	/**
+	 * 生成controller
+	 * */
+	private static String genController(String author, String packagePath, String beanName, String queryModelName,String extendsBasePackage){
+		StringBuffer sb = new StringBuffer();
+		if(StringUtils.isNotEmpty(packagePath)){
+			sb.append("package "+packagePath+";\n\n");
+		}
+		String businessPackage = packagePath.substring(0, packagePath.lastIndexOf("."));
+		String basePackage = businessPackage.substring(0, businessPackage.lastIndexOf("."));
+		sb.append("import javax.inject.Inject;\n\n");
+		sb.append("import org.springframework.web.bind.annotation.RequestMapping;\n");
+		sb.append("import org.springframework.stereotype.Controller;\n");
+		sb.append("import "+extendsBasePackage+".controller.GenericController;\n");
+		sb.append("import "+basePackage+".common.base.service.GenericService;\n\n");
+		sb.append("import "+businessPackage+".entity."+beanName+";\n");
+		sb.append("import "+businessPackage+".entity."+queryModelName+";\n");
+		sb.append("import "+businessPackage+".service."+beanName+"Service;\n\n");
+		sb.append("/**\n *@author "+author+"\n **/\n");
+		sb.append("@Controller\n");
+		sb.append("@RequestMapping(\"/"+toFirstCharLowerCase(beanName)+"\")\n");
+		sb.append("public class "+beanName+"Controller extends GenericController<"+beanName+", "+queryModelName+"> {\r\n");
+		sb.append("\t@Inject\n");
+		sb.append("\tprivate "+beanName+"Service "+toFirstCharLowerCase(beanName)+"Service;\n");
+		sb.append("\t@Override\n\tprotected GenericService<"+beanName+", "+queryModelName+"> getService() {\n");
+		sb.append("\t\treturn "+toFirstCharLowerCase(beanName)+"Service;\n");
+		sb.append("\t}\n");
+		sb.append("}");
+		return sb.toString();
+	}
 	
 	/**
 	 * 将首字母变大写
@@ -221,11 +252,12 @@ public class GenCodeUtil {
 	 * @param extendsBasePackage 继承框架类包的基础路径
 	 * @param basePackage 生成文件的包的基础路径
 	 * @param mybatisBasePath mybatis配置文件夹路径
+	 * @param htmlBasePath   html配置文件的路径
 	 * @param beanName 实体类名称
 	 * @param queryModelName 查询类名称
 	 * @since properties keys include 'db.driver'、'db.username'、'db.password' and 'db.url'
 	 * */
-	public static void genFiles(String author, String tableName, String extendsBasePackage, String basePackage, String mybatisBasePath, String beanName, String queryModelName, String properitesUri) throws IOException{
+	public static void genFiles(String author, String tableName, String extendsBasePackage, String basePackage, String mybatisBasePath, String htmlBasePath, String beanName, String queryModelName, String properitesUri) throws IOException{
 		String packagePath = basePackage.replaceAll("\\.", "/");
 		JdbcUtil.setPropertiesURL(properitesUri);
 		TableModel table = JdbcUtil.getTableStructure(tableName);
@@ -265,10 +297,26 @@ public class GenCodeUtil {
 		fos = new FileOutputStream(fService);
 		fos.write(genService(author, basePackage+".service", beanName, queryModelName,extendsBasePackage).getBytes());
 		fos.close();
-		// 生成html文件
-		String htmlPath = createFloder("/src/main/resources/templates/sys/beanName");
-		fos = new FileOutputStream(htmlPath+"/"+toFirstCharLowerCase(beanName)+".html");
-		fos.write(HtmlUtil.genHtml(author,table,beanName).getBytes());
+        // 生成controller
+		String controllerPath = createFloder("src/main/java", packagePath+"/controller");
+		File fController = new File(controllerPath+"/"+beanName+"Controller.java");
+		fos = new FileOutputStream(fController);
+		fos.write(genController(author, basePackage+".controller", beanName, queryModelName,extendsBasePackage).getBytes());
+		fos.close();
+		// 生成list的html文件
+		String htmlListPath = createFloder(htmlBasePath+toFirstCharLowerCase(beanName));
+		fos = new FileOutputStream(htmlListPath+"/"+toFirstCharLowerCase(beanName)+".html");
+		fos.write(HtmlUtil.genListHtml(author,table,toFirstCharLowerCase(beanName)).getBytes());
+		fos.close();
+		// 生成add的html文件
+		String htmlAddPath = createFloder(htmlBasePath+toFirstCharLowerCase(beanName));
+		fos = new FileOutputStream(htmlAddPath+"/add.html");
+		fos.write(HtmlUtil.genAddHtml(author,table,toFirstCharLowerCase(beanName)).getBytes());
+		fos.close();
+		// 生成update的html文件
+		String htmlUpdatePath = createFloder(htmlBasePath+toFirstCharLowerCase(beanName));
+		fos = new FileOutputStream(htmlUpdatePath+"/update.html");
+		fos.write(HtmlUtil.genUpdateHtml(author,table,toFirstCharLowerCase(beanName)).getBytes());
 		fos.close();
 	}
 	/**
@@ -312,6 +360,6 @@ public class GenCodeUtil {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		genFiles("linzf", "role_associate_tree", "com.si.demo.common.base","com.si.demo.sys", "/resources/mybatis/mapper", "RoleAssociateTree", "QueryRoleAssociateTree", "application-dev.properties");
+		genFiles("linzf", "test_html", "com.si.demo.common.base","com.si.demo.sys", "/resources/mybatis/mapper","/src/main/resources/templates/sys/","TestHtml", "QueryTestHtml", "application-dev.properties");
 	}
 }
