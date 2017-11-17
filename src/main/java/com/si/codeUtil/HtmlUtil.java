@@ -99,9 +99,9 @@ public class HtmlUtil {
         sb.append("\t\t\t\t\t\t$('.modal-dialog', window.top.document).parent('div').remove()\n");
         sb.append("\t\t\t\t\t\t$('body', window.top.document).find('.modal-backdrop').remove();\n");
         sb.append("\t\t\t\t\t\t$(window.parent.document).contents().find(\".tab-pane.fade.active.in iframe\")[0].contentWindow.doQuery();\n");
-        sb.append("\t\t\t\t\t\twindow.Ewin.alert({message:'增加数据成功!'});\n");
+        sb.append("\t\t\t\t\t\twindow.Ewin.alert({message:'更新数据成功!'});\n");
         sb.append("\t\t\t\t\t}else{\n");
-        sb.append("\t\t\t\t\t\twindow.Ewin.alert({message:'增加数据失败!'});\n");
+        sb.append("\t\t\t\t\t\twindow.Ewin.alert({message:'更新数据失败!'});\n");
         sb.append("\t\t\t\t\t}\n");
         sb.append("\t\t\t\t })\n");
         sb.append("\t\t\t}\n");

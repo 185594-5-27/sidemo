@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.si.codeUtil.GenCodeUtil;
 import com.si.demo.common.base.constant.SystemStaticConst;
 import com.si.demo.common.base.entity.Page;
 import com.si.demo.common.base.entity.QueryBase;
@@ -53,9 +54,9 @@ public abstract class GenericController<T, Q extends QueryBase> {
 			if(m.find()){
 				basePath = m.group();
 				basePath = basePath.substring(1, basePath.length()-10);
-				basePath = basePath.toLowerCase();
 				basePath = basePath.replace(".", "/");
 				basePath = basePath.replace("/controller/", "/");
+				basePath = basePath.substring(0,basePath.lastIndexOf("/")+1)+ GenCodeUtil.toFirstCharLowerCase(basePath.substring(basePath.lastIndexOf("/")+1));
 			}
 			else{
 				throw new Exception("获取页面基路径失败");

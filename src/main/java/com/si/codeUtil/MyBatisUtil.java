@@ -1,8 +1,8 @@
 package com.si.codeUtil;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
+
+import java.util.List;
 
 /**
  * mybatis配置文件生成功能

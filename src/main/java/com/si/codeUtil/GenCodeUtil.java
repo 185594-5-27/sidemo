@@ -1,12 +1,12 @@
 package com.si.codeUtil;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 
 public class GenCodeUtil {
 	
@@ -205,7 +205,7 @@ public class GenCodeUtil {
 	 * @param str
 	 * @return
 	 */
-	private static String toFirstCharLowerCase(String str){
+	public static String toFirstCharLowerCase(String str){
 		char[]  columnCharArr = str.toCharArray();
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < columnCharArr.length; i++) {
@@ -305,7 +305,7 @@ public class GenCodeUtil {
 		fos.close();
 		// 生成list的html文件
 		String htmlListPath = createFloder(htmlBasePath+toFirstCharLowerCase(beanName));
-		fos = new FileOutputStream(htmlListPath+"/"+toFirstCharLowerCase(beanName)+".html");
+		fos = new FileOutputStream(htmlListPath+"/"+toFirstCharLowerCase(beanName)+"List.html");
 		fos.write(HtmlUtil.genListHtml(author,table,toFirstCharLowerCase(beanName)).getBytes());
 		fos.close();
 		// 生成add的html文件
@@ -360,6 +360,6 @@ public class GenCodeUtil {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		genFiles("linzf", "test_html", "com.si.demo.common.base","com.si.demo.sys", "/resources/mybatis/mapper","/src/main/resources/templates/sys/","TestHtml", "QueryTestHtml", "application-dev.properties");
+		genFiles("linzf", "t_dining_table", "com.dinner.snqjf.common.base","com.dinner.snqjf.back", "/resources/mybatis/mapper","/src/main/resources/templates/back/","DiningTable", "QueryDiningTable", "application-dev.properties");
 	}
 }
