@@ -9,7 +9,11 @@ import com.si.demo.sys.service.TreeService;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -49,7 +53,9 @@ public class UserInfo {
      * @return
      */
     public static User getUser(){
-        return (User)Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).orElse(null);
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession().getAttribute("SPRING_SECURITY_CONTEXT");
+        return (User)Optional.ofNullable(securityContextImpl.getAuthentication().getPrincipal()).orElse(null);
     }
 
     /**
